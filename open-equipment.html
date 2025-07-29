@@ -25,16 +25,19 @@
       };
 
       try {
-        await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
 
-        document.body.innerHTML = "✅ Уведомление отправлено, проверьте приложение";
-      } catch (e) {
-        document.body.innerHTML = "Ошибка запуска бизнес-процесса.";
-      }
+  const result = await response.json();
+  console.log(result); // Для консоли разработчика
+  document.body.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+} catch (e) {
+  document.body.innerHTML = "Ошибка запуска бизнес-процесса.";
+  console.error(e);
+}
     }
 
     window.onload = triggerWebhook;
