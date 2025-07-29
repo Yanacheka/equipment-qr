@@ -1,0 +1,17 @@
+<script>
+  async function triggerWebhook() {
+    const params = new URLSearchParams(window.location.search);
+    const elementId = params.get("elementId");
+    const entityTypeId = params.get("entityTypeId");
+
+    const documentId = [
+      "crm",
+      "Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_" + entityTypeId,
+      elementId
+    ];
+
+    document.body.innerHTML = `<pre>DOCUMENT_ID: ${JSON.stringify(documentId, null, 2)}</pre>`;
+  }
+
+  window.onload = triggerWebhook;
+</script>
