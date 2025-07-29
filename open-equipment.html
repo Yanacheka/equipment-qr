@@ -18,7 +18,9 @@
       
       const data = {
         "TEMPLATE_ID": 433, // ID бизнес-процесса
-        "DOCUMENT_ID": [`crm`, `item`, `DYNAMIC_${entityTypeId}_${elementId}`],
+        "DOCUMENT_ID": [`crm`, `Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_${entityTypeId}`,
+  elementId
+],
         "PARAMETERS": {
           "WHO_SCANNED": "QR" // пример параметра
         }
