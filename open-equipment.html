@@ -17,15 +17,16 @@
       const webhookUrl = "https://portal.proprof.pro/rest/34/j34sppzig9zmsm40/bizproc.workflow.start";
 
       const data = {
-        "TEMPLATE_ID": 433,
-        "DOCUMENT_ID": [
-          "crm",
-          `Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_${entityTypeId}`,
-          elementId
-        ],
-        "PARAMETERS": {
-          "WHO_SCANNED": "QR"
-        }
+  "TEMPLATE_ID": 433,
+  "DOCUMENT_ID": [
+    "crm",
+    "Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_" + entityTypeId,
+    elementId
+  ],
+  "PARAMETERS": {
+    "WHO_SCANNED": "QR"
+  }
+};
       };
 
       try {
