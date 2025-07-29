@@ -2,37 +2,45 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Открытие оборудования</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Обработка QR</title>
   <script>
-    function getQueryParam(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
+    async function triggerWebhook() {
+      const params = new URLSearchParams(window.location.search);
+      const elementId = params.get("elementId");
+      const entityTypeId = params.get("entityTypeId");
 
-    window.onload = function () {
-      const entityTypeId = getQueryParam('entityTypeId');
-      const elementId = getQueryParam('elementId');
-
-      if (!entityTypeId || !elementId) {
-        document.body.innerHTML = '<p style="font-family: sans-serif; color: red;">❗ Ошибка: Не указаны параметры entityTypeId и elementId.</p>';
+      if (!elementId || !entityTypeId) {
+        document.body.innerHTML = "Ошибка: нет параметров";
         return;
       }
 
-      const bitrixLink = `bitrix://crm/item/details/${entityTypeId}/${elementId}/`;
-      const fallbackUrl = `https://portal.proprof.pro/page/tmts/oborudovanie/type/${entityTypeId}/details/${elementId}/`;
+      const webhookUrl = "https://portal.proprof.pro/rest/34/j34sppzig9zmsm40/";
+      
+      const data = {
+        "TEMPLATE_ID": 123, // ID бизнес-процесса
+        "DOCUMENT_ID": [`crm`, `item`, `DYNAMIC_${entityTypeId}_${elementId}`],
+        "PARAMETERS": {
+          "WHO_SCANNED": "QR" // пример параметра
+        }
+      };
 
-      // Пытаемся открыть мобильное приложение
-      window.location.href = bitrixLink;
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
-      // Если не открылось — редирект в браузер
-      setTimeout(() => {
-        window.location.href = fallbackUrl;
-      }, 1500);
-    };
+        document.body.innerHTML = "✅ Уведомление отправлено, проверьте приложение";
+      } catch (e) {
+        document.body.innerHTML = "Ошибка запуска бизнес-процесса.";
+      }
+    }
+
+    window.onload = triggerWebhook;
   </script>
 </head>
 <body>
-  <p style="font-family: sans-serif;">⏳ Открытие карточки оборудования...</p>
+  <p>⏳ Обработка...</p>
 </body>
 </html>
