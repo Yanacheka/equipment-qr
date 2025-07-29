@@ -10,42 +10,51 @@
       const entityTypeId = params.get("entityTypeId");
 
       if (!elementId || !entityTypeId) {
-        document.body.innerHTML = "Ошибка: нет параметров";
+        document.body.innerHTML = "❌ Ошибка: нет параметров";
         return;
       }
 
       const webhookUrl = "https://portal.proprof.pro/rest/34/j34sppzig9zmsm40/bizproc.workflow.start";
-      
+
       const data = {
-        "TEMPLATE_ID": 433, // ID бизнес-процесса
-        "DOCUMENT_ID": [`crm`, `Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_${entityTypeId}`,
-  elementId
-],
+        "TEMPLATE_ID": 433,
+        "DOCUMENT_ID": [
+          "crm",
+          `Bitrix\\Crm\\Integration\\BizProc\\Document\\Dynamic_${entityTypeId}`,
+          elementId
+        ],
         "PARAMETERS": {
-          "WHO_SCANNED": "QR" // пример параметра
+          "WHO_SCANNED": "QR"
         }
       };
 
       try {
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+        const response = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
-  const result = await response.json();
-  console.log(result); // Для консоли разработчика
-  document.body.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-} catch (e) {
-  document.body.innerHTML = "Ошибка запуска бизнес-процесса.";
-  console.error(e);
-}
+        const result = await response.json();
+        console.log(result); // Можно убрать после отладки
+
+        if (result.result) {
+          document.body.innerHTML = "✅ Уведомление отправлено, проверьте приложение";
+        } else if (result.error_description) {
+          document.body.innerHTML = `❌ Ошибка: ${result.error_description}`;
+        } else {
+          document.body.innerHTML = "❌ Неизвестная ошибка.";
+        }
+      } catch (e) {
+        document.body.innerHTML = "❌ Ошибка выполнения запроса.";
+        console.error(e);
+      }
     }
 
     window.onload = triggerWebhook;
   </script>
 </head>
 <body>
-  <p>⏳ Обработка...</p>
+  <p>⏳ Обработка QR-кода...</p>
 </body>
 </html>
